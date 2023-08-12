@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  server:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: builder
+    volumes:
+      - .:/evalora/src/app
+      - /evalora/src/app/node_modules
+    ports:
+      - 8080:8080
+      - 9229:9229
+    environment:
+      PORT: 8080
+      DATABASE_URI: 'mongodb://localhost:27017/evalora'
+    command: yarn start:dev
+  mongo:
+    image: mongo:4.2.8
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
+volumes:
+  mongodb:
+  mongodb_config:
