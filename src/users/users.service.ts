@@ -3,6 +3,7 @@ import { ICreatedUser, IUser } from './interfaces/user.interface';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import constants from '@/constants';
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class UsersService {
@@ -12,12 +13,18 @@ export class UsersService {
   ) {}
 
   async create(user: CreateUserDto): Promise<ICreatedUser> {
-    const newUser = new this.userModel(user);
-    const createdUser = await newUser.save();
-    return {
-      _id: createdUser._id,
-      username: createdUser.username,
-    };
+    try {
+      const passwordHash = await argon2.hash(user.password);
+      user.password = passwordHash;
+      const newUser = new this.userModel(user);
+      const createdUser = await newUser.save();
+      return {
+        _id: createdUser._id,
+        username: createdUser.username,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findAll(): Promise<IUser[]> {
