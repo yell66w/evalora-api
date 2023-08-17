@@ -5,6 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import appConfig from './config/app.config';
 import { DatabaseModule } from './database/database.module';
+import { ProductsController } from './products/products.controller';
+import { ProductsModule } from './products/products.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,8 +17,9 @@ import { DatabaseModule } from './database/database.module';
     UsersModule,
     AuthModule,
     MongooseModule.forRoot(appConfig().databaseUri),
+    ProductsModule,
   ],
-  controllers: [],
+  controllers: [ProductsController],
   providers: [],
 })
 export class AppModule {}
